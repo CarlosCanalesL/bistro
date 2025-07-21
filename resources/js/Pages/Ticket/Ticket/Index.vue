@@ -79,6 +79,7 @@ onMounted(() => {
               item-title="product_name"
               item-value="product_id"
               clearable
+              hide-details
             >
             </VAutocomplete>
           </VCol>
@@ -118,6 +119,9 @@ onMounted(() => {
               :loading="isLoading"
               @update:options="loadItems"
             >
+              <template #[`item.status`]="{ item }">
+                {{ item.status === 'D' ? 'Disponible' : 'Canjeado' }}
+              </template>
               <template #[`item.action`]="{ item }">
                 <Link :href="`/fund/currentfund/${item.current_fund_id}/edit`" as="button">
                   <VIcon color="warning" icon="mdi-pencil" />

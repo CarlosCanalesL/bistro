@@ -25,5 +25,10 @@ export default {
       icon: 'mdi-account-group',
       to: '/ticket/ticket',
     },
+    {
+      title: 'Lector QR',
+      icon: 'mdi-qrcode-scan',
+      to: '/ticket/reader/index'
+    }
   ],
 }

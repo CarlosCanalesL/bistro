@@ -5,6 +5,7 @@ use Modules\Ticket\Http\Controllers\TicketController;
 use Modules\Ticket\Http\Controllers\FairController;
 use Modules\Ticket\Http\Controllers\StationController;
 use Modules\Ticket\Http\Controllers\ProductController;
+use Modules\Ticket\Http\Controllers\ReaderController;
 
 // Route::middleware(['auth', 'verified'])->group(function () {
 //     Route::resource('tickets', TicketController::class)->names('ticket');
@@ -18,5 +19,10 @@ Route::middleware('auth')->prefix('ticket')->group(function () {
 
     Route::controller(ProductController::class)->group(function () {
         Route::get('/product/list/{status}', 'list')->name('product.list');
+    });
+
+    Route::controller(ReaderController::class)->group(function () {
+        Route::get('/reader/index', 'index')->name('reader.index');
+        Route::post('/reader/store', 'store')->name('reader.store');
     });
 });

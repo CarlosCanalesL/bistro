@@ -26,6 +26,7 @@
     },
     "dependencies": {
         "crypto-js": "^4.2.0",
+        "html5-qrcode": "^2.3.8",
         "moment-timezone": "^0.5.48",
         "pinia": "^3.0.1",
         "vue-toastification": "^2.0.0-rc.5",
