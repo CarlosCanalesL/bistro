@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
-   protected $table = 'products';
+    protected $table = 'products';
 
     /**
      * @var string primary key
@@ -18,6 +18,7 @@ class Product extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
+        'uuid',
         'product_name',
         'unit_price',
         'status',
@@ -39,5 +40,4 @@ class Product extends Model
     {
         return $this->hasMany(StationProduct::class, 'product_id');
     }
-
 }

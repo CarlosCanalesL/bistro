@@ -4,29 +4,28 @@ import { Head, Link, router } from '@inertiajs/vue3'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import DeleteDialog from '@/Components/DeleteDialog.vue'
-import { useCurrentFundStore } from '@/stores/fund/currentFundStore.js'
+import { useFairStore } from '@/stores/ticket/fairStore.js'
 import { storeToRefs } from 'pinia'
 
 const search = ref(null)
 const deleteId = ref(null)
 const deleteDialog = ref(false)
 const helpers = inject('helpers')
-const currentFundStore = useCurrentFundStore()
-const { items, totalItems, loading } = storeToRefs(currentFundStore)
+const fairStore = useFairStore()
+const { items, totalItems, loading } = storeToRefs(fairStore)
 
 const filterForm = reactive({
-  fund_name: null,
-  start_assignment_datee: null,
-  end_assignment_date: null,
+  fair_name: null,
+  status: null,
 })
 
 const deleteItem = (item) => {
-  deleteId.value = item.current_fund_id
+  deleteId.value = item.fair_id
   deleteDialog.value = true
 }
 
 const submitDelete = () => {
-  currentFundStore.destroy(deleteId.value)
+  fairStore.destroy(deleteId.value)
   deleteDialog.value = false
 }
 
@@ -41,7 +40,7 @@ const loadItems = ({ page, itemsPerPage, sortBy }) => {
 
   filters.search = helpers.removeEmptyAttribute(filterForm)
 
-  currentFundStore.index(filters)
+  fairStore.index(filters)
 }
 
 const applyFilter = () => {
@@ -49,44 +48,35 @@ const applyFilter = () => {
 }
 </script>
 <template>
-  <Head title="Fondo circulante" />
+  <Head title="Feria" />
   <AuthenticatedLayout>
     <div class="mb-3">
-      <h5 class="text-h5 font-weight-bold">Consulta de fondo circulante</h5>
+      <h5 class="text-h5 font-weight-bold">Consulta de ferias</h5>
       <Breadcrumbs :items="breadcrumbs" class="pa-0 mt-1" />
     </div>
-    <VCard title="Filtro de fondo circulante">
+    <VCard title="Filtro de ferias">
       <VCardText>
         <VRow dense>
-          <VCol cols="12" md="12" sm="12">
-            <VTextField v-model="filterForm.fund_name" label="Nombre del fondo" hide-details clearable></VTextField>
-          </VCol>
-        </VRow>
-        <VRow>
           <VCol cols="12" md="6" sm="12">
-            <VTextField
-              v-model="filterForm.start_assignment_datee"
-              type="date"
-              label="Fecha de asignacion inicial"
-              hide-details
-              clearable
-            ></VTextField>
+            <VTextField v-model="filterForm.fair_name" label="Nombre de la feria" hide-details clearable></VTextField>
           </VCol>
           <VCol cols="12" md="6" sm="12">
-            <VTextField
-              v-model="filterForm.end_assignment_date"
-              type="date"
-              label="Fecha de asignacion final"
+            <VSelect
+              v-model="filterForm.status"
+              label="Estatus"
+              :items="statusList"
+              item-title="title"
+              item-value="key"
               hide-details
               clearable
-            ></VTextField>
+            ></VSelect>
           </VCol>
         </VRow>
         <VRow>
           <VCol cols="12" md="12" sm="12">
             <VBtnToggle variant="tonal" divided>
               <VBtn prepend-icon="mdi-filter" text="Filtrar" color="primary" @click="applyFilter"></VBtn>
-              <VBtn prepend-icon="mdi-plus" text="Agregar" @click="router.visit('/fund/currentfund/create')"></VBtn>
+              <VBtn prepend-icon="mdi-plus" text="Agregar" @click="router.visit('/ticket/fair/create')"></VBtn>
             </VBtnToggle>
           </VCol>
         </VRow>
@@ -101,7 +91,7 @@ const applyFilter = () => {
               @update:options="loadItems"
             >
               <template #[`item.action`]="{ item }">
-                <Link :href="`/fund/currentfund/${item.current_fund_id}/edit`" as="button">
+                <Link :href="`/ticket/fair/${item.fair_id}/edit`" as="button">
                   <VIcon color="warning" icon="mdi-pencil" />
                 </Link>
                 <VIcon class="ml-2" color="error" icon="mdi-delete" @click="deleteItem(item)" />
@@ -124,15 +114,19 @@ export default {
   data() {
     return {
       headers: [
-        { title: 'Nombre del fondo', key: 'fund_name' },
-        { title: 'Monto total', key: 'total_amount' },
-        { title: 'Asignado', key: 'assignment_date' },
+        { title: 'Nombre de la feria', key: 'fair_name' },
+        { title: 'Desde', key: 'start_date' },
+        { title: 'Hasta', key: 'end_date' },
         { title: 'Estatus', key: 'status' },
         { title: 'Acción', key: 'action', sortable: false },
       ],
       breadcrumbs: [
         { title: 'Panel', disabled: false, href: '/dashboard' },
-        { title: 'Fondo circulante', disabled: true },
+        { title: 'Feria', disabled: true },
+      ],
+      statusList: [
+        { title: 'Activa', key: true },
+        { title: 'Cerrada', key: false },
       ],
     }
   },

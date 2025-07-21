@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Fund\Traits;
+namespace Modules\Ticket\Traits;
 
 trait SetFilterQuery
 {

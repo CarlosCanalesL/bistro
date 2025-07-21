@@ -3,20 +3,34 @@
 namespace Modules\Ticket\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Modules\Ticket\Database\Factories\FairFactory;
+use Illuminate\Support\Facades\Auth;
 
 class Fair extends Model
 {
-    use HasFactory;
+    protected $table = 'fairs';
+
+    /**
+     * @var string primary key
+     */
+    protected $primaryKey = 'fair_id';
 
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'fair_name',
+        'start_date',
+        'end_date',
+        'status',
+        'user_id'
+    ];
 
-    // protected static function newFactory(): FairFactory
-    // {
-    //     // return FairFactory::new();
-    // }
+    public static function boot()
+    {
+        parent::boot();
+
+        self::creating(function ($model) {
+            $model->user_id = Auth::user()->user_id;
+        });
+    }
 }

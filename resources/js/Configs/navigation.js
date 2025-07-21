@@ -6,14 +6,19 @@ export default {
       to: '/dashboard',
     },
     {
-      title: 'People',
+      title: 'Ferias',
       icon: 'mdi-account-group',
-      to: '/people',
+      to: '/ticket/fair',
     },
     {
-      title: 'Producto',
-      icon: 'mdi-product',
-      to: '/ticket/product'
-    }
+      title: 'Estaciones',
+      icon: 'mdi-account-group',
+      to: '/ticket/station',
+    },
+    {
+      title: 'Productos',
+      icon: 'mdi-account-group',
+      to: '/ticket/product',
+    },
   ],
 }
