@@ -1,32 +1,37 @@
 <script setup>
-import { reactive, ref, inject } from 'vue'
+import { storeToRefs } from 'pinia'
+import { reactive, ref, inject, onMounted } from 'vue'
 import { Head, Link, router } from '@inertiajs/vue3'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import DeleteDialog from '@/Components/DeleteDialog.vue'
-import { useCurrentFundStore } from '@/stores/fund/currentFundStore.js'
-import { storeToRefs } from 'pinia'
+import { useTicketStore } from '@/Stores/Ticket/ticketStore'
+import { useProductStore } from '@/Stores/Ticket/productStore'
+import GenTicketDialog from '@/Components/Ticket/GenTicketDialog.vue'
 
 const search = ref(null)
 const deleteId = ref(null)
 const deleteDialog = ref(false)
+const generateDialog = ref(false)
 const helpers = inject('helpers')
-const currentFundStore = useCurrentFundStore()
-const { items, totalItems, loading } = storeToRefs(currentFundStore)
+const ticketStore = useTicketStore()
+const productStore = useProductStore()
+const { products } = storeToRefs(productStore)
+const { items, totalItems, isLoading } = storeToRefs(ticketStore)
 
 const filterForm = reactive({
-  fund_name: null,
-  start_assignment_datee: null,
-  end_assignment_date: null,
+  uuid: null,
+  status: null,
+  product_id: null,
 })
 
 const deleteItem = (item) => {
-  deleteId.value = item.current_fund_id
+  deleteId.value = item.product_id
   deleteDialog.value = true
 }
 
 const submitDelete = () => {
-  currentFundStore.destroy(deleteId.value)
+  ticketStore.destroy(deleteId.value)
   deleteDialog.value = false
 }
 
@@ -41,52 +46,65 @@ const loadItems = ({ page, itemsPerPage, sortBy }) => {
 
   filters.search = helpers.removeEmptyAttribute(filterForm)
 
-  currentFundStore.index(filters)
+  ticketStore.index(filters)
 }
 
 const applyFilter = () => {
   search.value = String(Date.now())
 }
+
+const genSubmit = (response) => {
+  generateDialog.value = false
+}
+
+onMounted(() => {
+  productStore.ajaxList('Activo')
+})
 </script>
 <template>
-  <Head title="Fondo circulante" />
+  <Head title="Ticket" />
   <AuthenticatedLayout>
     <div class="mb-3">
-      <h5 class="text-h5 font-weight-bold">Consulta de fondo circulante</h5>
+      <h5 class="text-h5 font-weight-bold">Consulta de tickets</h5>
       <Breadcrumbs :items="breadcrumbs" class="pa-0 mt-1" />
     </div>
-    <VCard title="Filtro de fondo circulante">
+    <VCard title="Formulario de filtro">
       <VCardText>
         <VRow dense>
           <VCol cols="12" md="12" sm="12">
-            <VTextField v-model="filterForm.fund_name" label="Nombre del fondo" hide-details clearable></VTextField>
+            <VAutocomplete
+              v-model="filterForm.product_id"
+              label="Nombre del producto"
+              :items="products"
+              item-title="product_name"
+              item-value="product_id"
+              clearable
+            >
+            </VAutocomplete>
           </VCol>
         </VRow>
         <VRow>
           <VCol cols="12" md="6" sm="12">
-            <VTextField
-              v-model="filterForm.start_assignment_datee"
-              type="date"
-              label="Fecha de asignacion inicial"
-              hide-details
-              clearable
-            ></VTextField>
+            <VTextField v-model="filterForm.uuid" label="UUID del ticket" hide-details clearable></VTextField>
           </VCol>
           <VCol cols="12" md="6" sm="12">
-            <VTextField
-              v-model="filterForm.end_assignment_date"
-              type="date"
-              label="Fecha de asignacion final"
+            <VSelect
+              v-model="filterForm.status"
+              label="Estatus"
+              :items="statusList"
+              item-title="title"
+              item-value="value"
               hide-details
               clearable
-            ></VTextField>
+            >
+            </VSelect>
           </VCol>
         </VRow>
         <VRow>
           <VCol cols="12" md="12" sm="12">
             <VBtnToggle variant="tonal" divided>
               <VBtn prepend-icon="mdi-filter" text="Filtrar" color="primary" @click="applyFilter"></VBtn>
-              <VBtn prepend-icon="mdi-plus" text="Agregar" @click="router.visit('/fund/currentfund/create')"></VBtn>
+              <VBtn prepend-icon="mdi-cogs" text="Generar tickets" @click="generateDialog = true"></VBtn>
             </VBtnToggle>
           </VCol>
         </VRow>
@@ -97,7 +115,7 @@ const applyFilter = () => {
               :items-length="totalItems"
               :headers="headers"
               :search="search"
-              :loading="loading"
+              :loading="isLoading"
               @update:options="loadItems"
             >
               <template #[`item.action`]="{ item }">
@@ -117,6 +135,7 @@ const applyFilter = () => {
       @close-delete-dialog="deleteDialog = false"
       @delete-item="submitDelete"
     ></DeleteDialog>
+    <GenTicketDialog v-model="generateDialog" @result="genSubmit"></GenTicketDialog>
   </AuthenticatedLayout>
 </template>
 <script>
@@ -124,15 +143,20 @@ export default {
   data() {
     return {
       headers: [
-        { title: 'Nombre del fondo', key: 'fund_name' },
-        { title: 'Monto total', key: 'total_amount' },
-        { title: 'Asignado', key: 'assignment_date' },
+        { title: 'Producto', key: 'product_name' },
+        { title: 'UUID', key: 'uuid' },
+        { title: 'Precio', key: 'unit_price' },
         { title: 'Estatus', key: 'status' },
         { title: 'Acción', key: 'action', sortable: false },
       ],
       breadcrumbs: [
         { title: 'Panel', disabled: false, href: '/dashboard' },
-        { title: 'Fondo circulante', disabled: true },
+        { title: 'Tickets', disabled: true },
+      ],
+      statusList: [
+        { title: 'Disponible', value: 'D' },
+        { title: 'Canjeado', value: 'C' },
+        { title: 'Anulado', value: 'A' },
       ],
     }
   },

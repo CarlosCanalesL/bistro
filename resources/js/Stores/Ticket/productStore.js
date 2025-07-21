@@ -8,7 +8,7 @@ const api_url = '/ticket/product'
 
 export const useProductStore = defineStore('productStore', () => {
   const items = ref([])
-  const funds = ref([])
+  const products = ref([])
   const errors = ref([])
   const totalItems = ref(0)
   const isLoading = ref(false)
@@ -46,7 +46,7 @@ export const useProductStore = defineStore('productStore', () => {
   const ajaxList = async (status) => {
     try {
       const response = await window.axios.get(`${api_url}/list/${status}`)
-      funds.value = response.data.products
+      products.value = response.data.products
     } catch (ex) {
       toast.error(ex.message)
     }
@@ -106,10 +106,10 @@ export const useProductStore = defineStore('productStore', () => {
     })
   }
 
-  const destroy = (productId) => {
+  const destroy = (id) => {
     isLoading.value = true
 
-    router.delete(`${api_url}/${productId}`, {
+    router.delete(`${api_url}/${id}`, {
       onSuccess: () => {
         redirect()
       },
@@ -124,7 +124,7 @@ export const useProductStore = defineStore('productStore', () => {
 
   return {
     items,
-    funds,
+    products,
     form,
     errors,
     totalItems,

@@ -14,4 +14,9 @@ Route::middleware('auth')->prefix('ticket')->group(function () {
     Route::resource('/fair', FairController::class)->except(['show']);
     Route::resource('/station', StationController::class)->except(['show']);
     Route::resource('/product', ProductController::class)->except(['show']);
+    Route::resource('/ticket', TicketController::class)->except(['show']);
+
+    Route::controller(ProductController::class)->group(function () {
+        Route::get('/product/list/{status}', 'list')->name('product.list');
+    });
 });

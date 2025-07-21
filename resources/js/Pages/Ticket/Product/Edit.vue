@@ -3,57 +3,53 @@ import { onMounted } from 'vue'
 import { Head, Link, usePage } from '@inertiajs/vue3'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
-import { useCurrentFundStore } from '@/stores/fund/currentFundStore'
+import { useProductStore } from '@/Stores/Ticket/productStore'
 import { storeToRefs } from 'pinia'
 
 const page = usePage()
-const currentFundStore = useCurrentFundStore()
-const { form, errors, isLoading } = storeToRefs(currentFundStore)
+const productStore = useProductStore()
+const { form, errors, isLoading } = storeToRefs(productStore)
 
 const submit = () => {
-  currentFundStore.update(page.props.currentfund.current_fund_id)
+  productStore.update(page.props.product.product_id)
 }
 
 onMounted(() => {
-  Object.assign(currentFundStore.form, page.props.currentfund)
+  Object.assign(productStore.form, page.props.product)
 })
 </script>
 
 <template>
-  <Head title="Fondo circulante" />
+  <Head title="Producto" />
   <AuthenticatedLayout>
     <div class="mb-3">
-      <h5 class="text-h5 font-weight-bold">Actualizacion de fondo circulante</h5>
+      <h5 class="text-h5 font-weight-bold">Actualizacion del producto</h5>
       <Breadcrumbs :items="breadcrumbs" class="pa-0 mt-1" />
     </div>
     <VCard>
       <VForm @submit.prevent="submit">
         <VCardText>
           <VRow>
-            <VCol cols="12" md="6" sm="12">
-              <VTextField v-model="form.fund_name" label="Nombre del fondo" :error-messages="errors.fund_name" />
-            </VCol>
-            <VCol cols="12" md="6" sm="12">
+            <VCol cols="12" md="12" sm="12">
               <VTextField
-                v-model="form.total_amount"
-                label="Monto total"
-                :error-messages="errors.total_amount"
-              ></VTextField>
+                v-model="form.product_name"
+                label="Nombre del producto"
+                :error-messages="errors.product_name"
+              />
             </VCol>
           </VRow>
           <VRow>
             <VCol cols="12" md="6" sm="12">
               <VTextField
-                v-model="form.assignment_date"
-                type="date"
-                label="Fecha de asignacion"
-                :error-messages="errors.assignment_date"
+                v-model="form.unit_price"
+                label="Precio unitario"
+                :error-messages="errors.unit_price"
               ></VTextField>
             </VCol>
             <VCol cols="12" md="6" sm="12">
               <VRadioGroup v-model="form.status" label="Estatus" :error-messages="errors.status" inline>
-                <VRadio value="ACTIVO" label="ACTIVO"></VRadio>
-                <VRadio value="CERRADO" label="CERRADO"></VRadio>
+                <VRadio value="Activo" label="Activo"></VRadio>
+                <VRadio value="Inactivo" label="Inactivo"></VRadio>
               </VRadioGroup>
             </VCol>
           </VRow>
@@ -67,7 +63,7 @@ onMounted(() => {
             variant="tonal"
             color="primary"
           ></VBtn>
-          <Link href="/curfu/currentfund" as="div">
+          <Link href="/ticket/product" as="div">
             <VBtn prepend-icon="mdi-cancel" text="Cancelar" variant="tonal"></VBtn>
           </Link>
         </VCardActions>

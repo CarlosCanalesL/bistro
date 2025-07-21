@@ -4,29 +4,29 @@ import { Head, Link, router } from '@inertiajs/vue3'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import DeleteDialog from '@/Components/DeleteDialog.vue'
-import { useCurrentFundStore } from '@/stores/fund/currentFundStore.js'
+import { useProductStore } from '@/Stores/Ticket/productStore'
 import { storeToRefs } from 'pinia'
 
 const search = ref(null)
 const deleteId = ref(null)
 const deleteDialog = ref(false)
 const helpers = inject('helpers')
-const currentFundStore = useCurrentFundStore()
-const { items, totalItems, loading } = storeToRefs(currentFundStore)
+const productStore = useProductStore()
+const { items, totalItems, isLoading } = storeToRefs(productStore)
 
 const filterForm = reactive({
-  fund_name: null,
-  start_assignment_datee: null,
-  end_assignment_date: null,
+  uuid: null,
+  product_name: null,
+  status: null,
 })
 
 const deleteItem = (item) => {
-  deleteId.value = item.current_fund_id
+  deleteId.value = item.product_id
   deleteDialog.value = true
 }
 
 const submitDelete = () => {
-  currentFundStore.destroy(deleteId.value)
+  productStore.destroy(deleteId.value)
   deleteDialog.value = false
 }
 
@@ -41,7 +41,7 @@ const loadItems = ({ page, itemsPerPage, sortBy }) => {
 
   filters.search = helpers.removeEmptyAttribute(filterForm)
 
-  currentFundStore.index(filters)
+  productStore.index(filters)
 }
 
 const applyFilter = () => {
@@ -49,44 +49,40 @@ const applyFilter = () => {
 }
 </script>
 <template>
-  <Head title="Fondo circulante" />
+  <Head title="Productos" />
   <AuthenticatedLayout>
     <div class="mb-3">
-      <h5 class="text-h5 font-weight-bold">Consulta de fondo circulante</h5>
+      <h5 class="text-h5 font-weight-bold">Consulta de productos</h5>
       <Breadcrumbs :items="breadcrumbs" class="pa-0 mt-1" />
     </div>
-    <VCard title="Filtro de fondo circulante">
+    <VCard title="Formulario de filtro">
       <VCardText>
         <VRow dense>
           <VCol cols="12" md="12" sm="12">
-            <VTextField v-model="filterForm.fund_name" label="Nombre del fondo" hide-details clearable></VTextField>
+            <VTextField
+              v-model="filterForm.product_name"
+              label="Nombre del producto"
+              hide-details
+              clearable
+            ></VTextField>
           </VCol>
         </VRow>
         <VRow>
           <VCol cols="12" md="6" sm="12">
-            <VTextField
-              v-model="filterForm.start_assignment_datee"
-              type="date"
-              label="Fecha de asignacion inicial"
-              hide-details
-              clearable
-            ></VTextField>
+            <VTextField v-model="filterForm.uuid" label="UUID del producto" hide-details clearable></VTextField>
           </VCol>
           <VCol cols="12" md="6" sm="12">
-            <VTextField
-              v-model="filterForm.end_assignment_date"
-              type="date"
-              label="Fecha de asignacion final"
-              hide-details
-              clearable
-            ></VTextField>
+            <VRadioGroup v-model="filterForm.status" label="Estatus" hide-details inline>
+              <VRadio value="Activa" label="Activa"></VRadio>
+              <VRadio value="Inactiva" label="Inactiva"></VRadio>
+            </VRadioGroup>
           </VCol>
         </VRow>
         <VRow>
           <VCol cols="12" md="12" sm="12">
             <VBtnToggle variant="tonal" divided>
               <VBtn prepend-icon="mdi-filter" text="Filtrar" color="primary" @click="applyFilter"></VBtn>
-              <VBtn prepend-icon="mdi-plus" text="Agregar" @click="router.visit('/fund/currentfund/create')"></VBtn>
+              <VBtn prepend-icon="mdi-plus" text="Agregar" @click="router.visit('/ticket/product/create')"></VBtn>
             </VBtnToggle>
           </VCol>
         </VRow>
@@ -97,11 +93,11 @@ const applyFilter = () => {
               :items-length="totalItems"
               :headers="headers"
               :search="search"
-              :loading="loading"
+              :loading="isLoading"
               @update:options="loadItems"
             >
               <template #[`item.action`]="{ item }">
-                <Link :href="`/fund/currentfund/${item.current_fund_id}/edit`" as="button">
+                <Link :href="`/ticket/product/${item.product_id}/edit`" as="button">
                   <VIcon color="warning" icon="mdi-pencil" />
                 </Link>
                 <VIcon class="ml-2" color="error" icon="mdi-delete" @click="deleteItem(item)" />
@@ -124,15 +120,15 @@ export default {
   data() {
     return {
       headers: [
-        { title: 'Nombre del fondo', key: 'fund_name' },
-        { title: 'Monto total', key: 'total_amount' },
-        { title: 'Asignado', key: 'assignment_date' },
+        { title: 'Nombre del producto', key: 'product_name' },
+        { title: 'UUID del producto', key: 'uuid' },
+        { title: 'Precio unitario', key: 'unit_price' },
         { title: 'Estatus', key: 'status' },
         { title: 'Acción', key: 'action', sortable: false },
       ],
       breadcrumbs: [
         { title: 'Panel', disabled: false, href: '/dashboard' },
-        { title: 'Fondo circulante', disabled: true },
+        { title: 'Producto', disabled: true },
       ],
     }
   },

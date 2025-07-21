@@ -1,24 +1,22 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import moment from 'moment-timezone'
 import { useToast } from "vue-toastification"
 import { router, useForm } from '@inertiajs/vue3'
 
 const toast = useToast()
-const api_url = '/fund/currentfund'
+const api_url = '/ticket/ticket'
 
-export const useCurrentFundStore = defineStore('currentFundStore', () => {
+export const useTicketStore = defineStore('ticketStore', () => {
   const items = ref([])
-  const funds = ref([])
+  const tickets = ref([])
   const errors = ref([])
   const totalItems = ref(0)
   const isLoading = ref(false)
 
   const form = useForm({
-    fund_name: null,
-    total_amount: null,
-    assignment_date: moment.tz('America/EL_Salvador').format('YYYY-MM-DD'),
-    status: null,
+    status: 'D',
+    quantity: null,
+    product_id: null,
   })
 
   const redirect = () => {
@@ -45,15 +43,6 @@ export const useCurrentFundStore = defineStore('currentFundStore', () => {
     })
   }
 
-  const ajaxList = async (status) => {
-    try {
-      const response = await window.axios.get(`${api_url}/list/${status}`)
-      funds.value = response.data.funds
-    } catch (ex) {
-      toast.error(ex.message)
-    }
-  }
-
   const store = () => {
     isLoading.value = true
 
@@ -76,8 +65,9 @@ export const useCurrentFundStore = defineStore('currentFundStore', () => {
 
     try {
       const response = await window.axios.post(`${api_url}`, form.data())
-      const { message, fund } = response.data
-      funds.value.push(fund)
+      const { message, tickets } = response.data
+      items.value = tickets
+      form.reset()
       toast.success(message)
     } catch (ex) {
       if (ex.response) {
@@ -108,10 +98,10 @@ export const useCurrentFundStore = defineStore('currentFundStore', () => {
     })
   }
 
-  const destroy = (currentFundId) => {
+  const destroy = (id) => {
     isLoading.value = true
 
-    router.delete(`${api_url}/${currentFundId}`, {
+    router.delete(`${api_url}/${id}`, {
       onSuccess: () => {
         redirect()
       },
@@ -126,14 +116,13 @@ export const useCurrentFundStore = defineStore('currentFundStore', () => {
 
   return {
     items,
-    funds,
+    tickets,
     form,
     errors,
     totalItems,
     isLoading,
     index,
     store,
-    ajaxList,
     ajaxStore,
     update,
     destroy,

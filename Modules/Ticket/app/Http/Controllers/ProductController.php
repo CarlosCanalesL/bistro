@@ -4,13 +4,13 @@ namespace Modules\Ticket\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Modules\Ticket\Models\Product;
-use modules\Ticket\Http\Requests\ProductRequest;
+use Modules\Ticket\Http\Requests\ProductRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 use Modules\Ticket\Traits\SetFilterQuery;
 
@@ -37,7 +37,7 @@ class ProductController extends Controller
         });
 
         $result = $query
-            ->select('product_id', 'uuid', 'product_name', 'status')
+            ->select('product_id', 'uuid', 'product_name', 'unit_price', 'status')
             ->paginate($request->get('limit', 10));
 
         if ($request->expectsJson()) {
@@ -52,19 +52,19 @@ class ProductController extends Controller
     /**
      * List categories load resource
      */
-    public function list($enabled)
+    public function list($status)
     {
-        $funds =  DB::table('products')
-            ->where(function ($query) use ($enabled) {
-                if ($enabled === 'A') {
-                    $query->where('status', true);
+        $products =  DB::table('products')
+            ->where(function ($query) use ($status) {
+                if ($status === 'Activo') {
+                    $query->where('status', $status);
                 }
             })
             ->select('product_id', 'product_name')
             ->orderBy('product_name', 'asc')
             ->get();
 
-        return response()->json(['funds' => $funds]);
+        return response()->json(['products' => $products]);
     }
 
     /**
@@ -132,10 +132,10 @@ class ProductController extends Controller
 
     protected function setDataStore($request)
     {
-        $user = Auth::user();
         $current_date = $this->getCurrentDate()->format('Y-m-d H.i:s');
 
         return [
+            'uuid' => Str::uuid(),
             'product_name' => $request->get('product_name'),
             'unit_price' => $request->get('unit_price'),
             'status' => $request->get('status'),
@@ -158,6 +158,10 @@ class ProductController extends Controller
         $fieldList = [
             'product_name' => [
                 'field' => 'product_name',
+                'operator' => 'like'
+            ],
+            'uuid' => [
+                'field' => 'uuid',
                 'operator' => 'like'
             ],
             'status' => [

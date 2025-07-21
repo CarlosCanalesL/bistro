@@ -6,7 +6,7 @@ import { router, useForm } from '@inertiajs/vue3'
 const toast = useToast()
 const api_url = '/ticket/station'
 
-export const useCurrentFundStore = defineStore('currentFundStore', () => {
+export const useStationStore = defineStore('stationStore', () => {
   const items = ref([])
   const stations = ref([])
   const errors = ref([])

@@ -4,7 +4,7 @@ import { Head, Link, router } from '@inertiajs/vue3'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import DeleteDialog from '@/Components/DeleteDialog.vue'
-import { useFairStore } from '@/stores/ticket/fairStore.js'
+import { useFairStore } from '@/Stores/Ticket/fairStore'
 import { storeToRefs } from 'pinia'
 
 const search = ref(null)
@@ -12,7 +12,7 @@ const deleteId = ref(null)
 const deleteDialog = ref(false)
 const helpers = inject('helpers')
 const fairStore = useFairStore()
-const { items, totalItems, loading } = storeToRefs(fairStore)
+const { items, totalItems, isLoading } = storeToRefs(fairStore)
 
 const filterForm = reactive({
   fair_name: null,
@@ -87,7 +87,7 @@ const applyFilter = () => {
               :items-length="totalItems"
               :headers="headers"
               :search="search"
-              :loading="loading"
+              :loading="isLoading"
               @update:options="loadItems"
             >
               <template #[`item.action`]="{ item }">
@@ -125,8 +125,9 @@ export default {
         { title: 'Feria', disabled: true },
       ],
       statusList: [
-        { title: 'Activa', key: true },
-        { title: 'Cerrada', key: false },
+        { title: 'Programada', key: 'Programada' },
+        { title: 'Abierta', key: 'Abierta' },
+        { title: 'Cerrada', key: 'Cerrada' },
       ],
     }
   },

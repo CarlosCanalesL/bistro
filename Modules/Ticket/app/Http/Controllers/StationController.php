@@ -4,7 +4,7 @@ namespace Modules\Ticket\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Modules\Ticket\Models\Station;
-use modules\Ticket\Http\Requests\StationRequest;
+use Modules\Ticket\Http\Requests\StationRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Inertia\Inertia;

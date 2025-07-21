@@ -20,5 +20,10 @@ export default {
       icon: 'mdi-account-group',
       to: '/ticket/product',
     },
+    {
+      title: 'Tickets',
+      icon: 'mdi-account-group',
+      to: '/ticket/ticket',
+    },
   ],
 }
