@@ -69,12 +69,12 @@ export default {
       />
       <v-checkbox v-model="form.remember" label="Remember me" />
 
-      <v-btn :loading="form.processing" type="submit" block color="primary" class="mb-12">Login</v-btn>
+      <v-btn :loading="form.processing" type="submit" block color="#303a44" class="mb-12">INICIAR SESION</v-btn>
     </v-form>
-    <v-card-text class="text-center">
+    <!-- <v-card-text class="text-center">
       <Link class="text-blue text-decoration-none" href="/register">
         Sign up now <v-icon icon="mdi-chevron-right" />
       </Link>
-    </v-card-text>
+    </v-card-text> -->
   </GuestLayout>
 </template>

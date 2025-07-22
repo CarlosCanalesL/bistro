@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('uuid')->unique();
             $table->string('product_name',125);
             $table->decimal('unit_price', 10, 2);
-            $table->boolean('status');
+            $table->enum('status',['Activo','Inactivo'])->default('Activo');
             $table->timestamps();
         });
     }

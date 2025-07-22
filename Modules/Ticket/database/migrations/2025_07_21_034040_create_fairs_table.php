@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('fair_name',65);
             $table->date('start_date');
             $table->date('end_date');
-            $table->boolean('status');
+            $table->enum('status',['Programada','Abierta','Cerrada'])->default('Abierta');
             $table->unsignedInteger('user_id');
             $table->timestamps();
 

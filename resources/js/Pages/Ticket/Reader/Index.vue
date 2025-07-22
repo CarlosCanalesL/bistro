@@ -21,7 +21,7 @@ const submit = () => {
   <AuthenticatedLayout>
     <VCard title="Escaneo de codigos">
       <VCardText>
-        <ScannerCodeQR :fps="10" :qrbox="275" :reader-on="true" @result="onScanResult"></ScannerCodeQR>
+        <ScannerCodeQR :fps="10" :qrbox="150" :reader-on="true" @result="onScanResult"></ScannerCodeQR>
       </VCardText>
       <VCardText>
         <VForm @submit.prevent="submit">

@@ -7,22 +7,22 @@ export default {
     },
     {
       title: 'Ferias',
-      icon: 'mdi-account-group',
+      icon: 'mdi-calendar-star',
       to: '/ticket/fair',
     },
     {
       title: 'Estaciones',
-      icon: 'mdi-account-group',
+      icon: 'mdi-map-marker',
       to: '/ticket/station',
     },
     {
       title: 'Productos',
-      icon: 'mdi-account-group',
+      icon: 'mdi-package-variant',
       to: '/ticket/product',
     },
     {
       title: 'Tickets',
-      icon: 'mdi-account-group',
+      icon: 'mdi-ticket-confirmation',
       to: '/ticket/ticket',
     },
     {

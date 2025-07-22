@@ -4,7 +4,7 @@ import { Html5QrcodeScanner, Html5QrcodeScanType } from 'html5-qrcode'
 
 const props = defineProps({
   fps: { type: Number, default: 10 },
-  qrbox: { type: Number, default: 275 },
+  qrbox: { type: Number, default: 150 },
   readerOn: { type: Boolean, required: true },
 })
 
@@ -30,5 +30,16 @@ onMounted(() => {
 })
 </script>
 <template>
-  <div id="qrcode"></div>
+  <div id="qrcode" class="scanner-wrapper"></div>
 </template>
+
+<style scoped>
+.scanner-wrapper {
+  max-width: 350px;
+  margin: 0 auto;
+}
+.scanner-wrapper video {
+  max-width: 100% !important;
+  height: auto !important;
+}
+</style>

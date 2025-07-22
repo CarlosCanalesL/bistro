@@ -1,25 +1,30 @@
 <script setup>
 import NavigationMenu from '@/Components/NavigationMenu.vue'
+import CifcoLogo from '@/Components/CifcoLogo.vue' // Importá el logo
 </script>
 
 <template>
   <v-app class="bg-grey-lighten-4">
     <v-navigation-drawer v-model="drawer" :rail="rail" permanent>
       <v-list>
-        <v-list-item
-          :prepend-avatar="avatar"
-          :title="$page.props.auth.user.name"
-          :subtitle="$page.props.auth.user.email"
-        />
+        <v-list-item :title="$page.props.auth.user.name" :subtitle="$page.props.auth.user.email">
+          <!-- Logo en lugar del avatar -->
+          <template #prepend>
+            <CifcoLogo style="height: 42px; width: 42px; margin-right: 5px;" />
+          </template>
+        </v-list-item>
       </v-list>
+
       <v-divider />
       <NavigationMenu />
     </v-navigation-drawer>
-    <v-app-bar color="primary">
+
+    <v-app-bar color="#303a44">
       <v-app-bar-nav-icon v-if="$vuetify.display.mobile" @click.stop="drawer = !drawer" />
       <v-app-bar-nav-icon v-else @click.stop="rail = !rail" />
-      <v-toolbar-title text="Laravel" />
+      <v-toolbar-title text="BISTRO CIFCO" />
     </v-app-bar>
+
     <v-main>
       <v-container>
         <slot />
@@ -29,19 +34,12 @@ import NavigationMenu from '@/Components/NavigationMenu.vue'
 </template>
 
 <script>
-import gravatar from '../Utils/gravatar'
-
 export default {
   data() {
     return {
       drawer: false,
       rail: false,
     }
-  },
-  computed: {
-    avatar() {
-      return gravatar(this.$page.props.auth.user.email)
-    },
   },
   watch: {
     $page: {

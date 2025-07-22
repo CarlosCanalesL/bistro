@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('stations', function (Blueprint $table) {
             $table->unsignedInteger('station_id',$autoIncrement=true);
             $table->string('station_name',65);
-            $table->boolean('status');
+            $table->enum('status',['Activa','Inactiva'])->default('Activa');
             $table->unsignedInteger('user_id');
             $table->timestamps();
 
