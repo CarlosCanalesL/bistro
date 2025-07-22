@@ -7,12 +7,12 @@ const toast = useToast()
 const api_url = '/ticket/reader'
 
 export const useQrStore = defineStore('qrStore', () => {
-  const result = ref(true)
-  const message = ref(null)
+  const alert = ref(null)
   const isLoading = ref(false)
 
   const form = useForm({
     ticket_id: null,
+    status: null,
     uuid: null
   })
 
@@ -23,7 +23,7 @@ export const useQrStore = defineStore('qrStore', () => {
       const response = await window.axios.get(`${api_url}/ticket/${uuid}`)
       const { success, message, ticket } = response.data
       Object.assign(form, ticket)
-      result.value = success
+      alert.value = message
     } catch (error) {
       toast.error(error.message)
     } finally {
@@ -38,7 +38,8 @@ export const useQrStore = defineStore('qrStore', () => {
       preserveState: true,
       preserveScroll: true,
       onSuccess: () => {
-        form.reset()
+        form.status = 'S'
+        alert.value = `El producto ${form.product_name}, ha sido CANJEADO exitosamente.`
       },
       onError: (error) => {
         toast.error(error.message)
@@ -51,8 +52,7 @@ export const useQrStore = defineStore('qrStore', () => {
 
   return {
     form,
-    result,
-    message,
+    alert,
     isLoading,
     validate,
     store,

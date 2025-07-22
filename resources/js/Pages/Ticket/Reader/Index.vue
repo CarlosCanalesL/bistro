@@ -6,7 +6,7 @@ import ScannerCodeQR from '@/Components/ScannerCodeQR.vue'
 import { useQrStore } from '@/Stores/Ticket/qrStore'
 
 const qrStore = useQrStore()
-const { form, result, message, isLoading } = storeToRefs(qrStore)
+const { form, alert, isLoading } = storeToRefs(qrStore)
 
 const onScanResult = async (decodeText) => {
   await qrStore.validate(decodeText)
@@ -17,32 +17,33 @@ const submit = () => {
 }
 </script>
 <template>
-  <Head title="LectorQR" />
+  <Head title="Lector-QR" />
   <AuthenticatedLayout>
     <VCard title="Escaneo de codigos">
       <VCardText>
         <ScannerCodeQR :fps="10" :qrbox="275" :reader-on="true" @result="onScanResult"></ScannerCodeQR>
       </VCardText>
-      <VCardText v-if="form.product_name">
+      <VCardText>
         <VForm @submit.prevent="submit">
           <VRow dense>
-            <VCol cols="12" md="6" sm="12">
-              Producto: <VLabel style="font-weight: bold">{{ form.product_name }}</VLabel>
-            </VCol>
-            <VCol cols="12" md="6" sm="12">
-              Precio: <VLabel style="font-weight: bold">{{ form.unit_price }}</VLabel>
-            </VCol>
-          </VRow>
-          <VRow>
-            <VCol cols="12" md="6" sm="12">
-              <VBtn
-                prepend-icon="mdi-database"
-                type="submit"
-                text="Canjear"
-                variant="tonal"
-                color="primary"
-                :disabled="form.processing"
-              ></VBtn>
+            <VCol cols="12" md="12" sm="12">
+              <v-banner v-if="form.status === 'D'" color="info" icon="$info" :text="alert" stacked>
+                <template v-slot:actions>
+                  <VBtn
+                    prepend-icon="mdi-database"
+                    type="submit"
+                    text="Canjear"
+                    variant="tonal"
+                    color="primary"
+                    :disabled="form.processing"
+                  ></VBtn>
+                </template>
+              </v-banner>
+              <v-banner v-else-if="form.status === 'C'" color="warning" icon="$warning" :text="alert" stacked>
+              </v-banner>
+              <v-banner v-else-if="form.status === 'A'" color="error" icon="$error" :text="alert" stacked> </v-banner>
+              <v-banner v-else-if="form.status === 'S'" color="success" icon="$success" :text="alert" stacked>
+              </v-banner>
             </VCol>
           </VRow>
         </VForm>

@@ -25,5 +25,6 @@ Route::middleware('auth')->prefix('ticket')->group(function () {
         Route::get('/reader/index', 'index')->name('reader.index');
         Route::post('/reader/store', 'store')->name('reader.store');
         Route::get('/reader/ticket/{uuid}', 'validateTicket')->name('reader.validateTicket');
+        Route::get('/reader/report', 'ticketPdf')->name('reader.ticketPdf');
     });
 });

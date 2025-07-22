@@ -22,15 +22,7 @@ const createScan = () => {
 }
 
 const onScanSuccess = (decodedText, decodedResult) => {
-  document.getElementById('html5-qrcode-button-camera-stop').click()
-
   emits('result', decodedText, decodedResult)
-
-  if (props.readerOn) {
-    setTimeout(() => {
-      createScan()
-    }, 2000)
-  }
 }
 
 onMounted(() => {

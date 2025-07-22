@@ -132,6 +132,9 @@ onMounted(() => {
           </VCol>
         </VRow>
       </VCardText>
+      <VCardActions>
+        <a :href="'/ticket/reader/report'" target="_blank"> <VIcon icon="mdi-download"></VIcon> Descargar </a>
+      </VCardActions>
     </VCard>
     <DeleteDialog
       v-model="deleteDialog"

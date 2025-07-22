@@ -4,8 +4,11 @@ namespace Modules\Ticket\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Modules\Ticket\Http\Requests\ReaderRequest;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Carbon\Carbon;
 
@@ -22,19 +25,22 @@ class ReaderController extends Controller
     public function validateTicket($uuid)
     {
         $success = true;
-        $message = 'El producto escaneado se encuentra disponible para canjearlo';
+        $message = '';
 
         $ticket = $this->getTicket($uuid);
+        $product_name = Str::upper($ticket->product_name);
 
         switch ($ticket->status) {
             case 'C':
                 $success = false;
-                $message = 'El ticket escaneado, ya ha sido canjeado.';
+                $message = "El producto $product_name, ya ha sido CANJEADO.";
                 break;
             case 'A':
                 $success = false;
-                $message = 'El ticket escaneado, ha sido anulado.';
+                $message = "El producto $product_name, ha sido ANULADO.";
                 break;
+            default:
+                $message = "El producto $product_name, esta disponible, desea CANJEARLO?.";
         }
 
         return response()->json([
@@ -61,6 +67,27 @@ class ReaderController extends Controller
                 ]);
             }
         });
+    }
+
+    public function ticketPdf(Request $request)
+    {
+        $data = [];
+
+        $tickets = DB::table('v_tickets')
+            ->where('status', 'D')
+            ->select('product_name', 'uuid', 'unit_price')
+            ->get();
+
+        foreach ($tickets as $ticket) {
+            $data[] = [
+                'uuid' => $ticket->uuid,
+                'product_name' => $ticket->product_name,
+            ];
+        }
+
+        $pdf = Pdf::loadView('reports.tickets', ['data' => $data]);
+
+        return $pdf->download('tickets.pdf');
     }
 
     private function setDataStore($request, $station_user_id)
