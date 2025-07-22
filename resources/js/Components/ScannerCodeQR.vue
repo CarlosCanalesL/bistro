@@ -4,7 +4,7 @@ import { Html5QrcodeScanner, Html5QrcodeScanType } from 'html5-qrcode'
 
 const props = defineProps({
   fps: { type: Number, default: 10 },
-  qrbox: { type: Number, default: 250 },
+  qrbox: { type: Number, default: 275 },
   readerOn: { type: Boolean, required: true },
 })
 

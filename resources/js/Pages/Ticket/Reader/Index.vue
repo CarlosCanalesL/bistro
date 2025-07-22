@@ -1,18 +1,19 @@
 <script setup>
-import { ref } from 'vue'
-import { Head, Link } from '@inertiajs/vue3'
+import { storeToRefs } from 'pinia'
+import { Head } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import ScannerCodeQR from '@/Components/ScannerCodeQR.vue'
+import { useQrStore } from '@/Stores/Ticket/qrStore'
 
-const readerDialog = ref(false)
+const qrStore = useQrStore()
+const { form, result, message, isLoading } = storeToRefs(qrStore)
 
-const onScanResult = (decodeText) => {
-  readerDialog.value = false
-  console.log(decodeText)
+const onScanResult = async (decodeText) => {
+  await qrStore.validate(decodeText)
 }
 
-const codeqrClose = () => {
-  document.getElementById('html5-qrcode-button-camera-stop').click()
+const submit = () => {
+  qrStore.store()
 }
 </script>
 <template>
@@ -20,17 +21,32 @@ const codeqrClose = () => {
   <AuthenticatedLayout>
     <VCard title="Escaneo de codigos">
       <VCardText>
-        <ScannerCodeQR
-          :fps="10"
-          :qrcode="275"
-          :reader-on="true"
-          style="width: 275px"
-          @result="onScanResult"
-        ></ScannerCodeQR>
+        <ScannerCodeQR :fps="10" :qrbox="275" :reader-on="true" @result="onScanResult"></ScannerCodeQR>
       </VCardText>
-      <VCardActions>
-        <VBtn prepend-icon="mdi-stop-circle" text="Detener" variant="tonal" @click="codeqrClose()"></VBtn>
-      </VCardActions>
+      <VCardText v-if="form.product_name">
+        <VForm @submit.prevent="submit">
+          <VRow dense>
+            <VCol cols="12" md="6" sm="12">
+              Producto: <VLabel style="font-weight: bold">{{ form.product_name }}</VLabel>
+            </VCol>
+            <VCol cols="12" md="6" sm="12">
+              Precio: <VLabel style="font-weight: bold">{{ form.unit_price }}</VLabel>
+            </VCol>
+          </VRow>
+          <VRow>
+            <VCol cols="12" md="6" sm="12">
+              <VBtn
+                prepend-icon="mdi-database"
+                type="submit"
+                text="Canjear"
+                variant="tonal"
+                color="primary"
+                :disabled="form.processing"
+              ></VBtn>
+            </VCol>
+          </VRow>
+        </VForm>
+      </VCardText>
     </VCard>
   </AuthenticatedLayout>
 </template>

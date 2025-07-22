@@ -21,10 +21,7 @@ class ReaderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fair_name' => 'required',
-            'start_date' => 'required',
-            'end_date' => 'required',
-            'status' => 'required'
+            'ticket_id' => 'required',
         ];
     }
 
@@ -34,10 +31,7 @@ class ReaderRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'fair_name.required' => 'El campo :attribute es obligatorio.',
-            'start_date.required' => 'El campo :attribute es obligatorio.',
-            'end_date.required' => 'El campo :attribute es obligatorio.',
-            'status.required' => 'El campo :attribute es obligatorio.'
+            'ticket_id.required' => 'El campo :attribute es obligatorio.',
         ];
     }
 }
