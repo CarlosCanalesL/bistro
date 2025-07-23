@@ -3,22 +3,37 @@
 namespace Modules\Ticket\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StationTicketRequest extends FormRequest
 {
-    /**
-     * Get the validation rules that apply to the request.
-     */
-    public function rules(): array
-    {
-        return [];
-    }
-
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::check();
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     */
+    public function rules(): array
+    {
+        return [
+            'ticket_id' => 'required',
+            'station_user_id' => 'required',
+        ];
+    }
+
+    /**
+     * Get the validation messages that apply to the request.
+     */
+    public function messages(): array
+    {
+        return [
+            'ticket_id.required' => 'El campo :attribute es obligatorio.',
+            'station_user_id.required' => 'El campo :attribute es obligatorio.'
+        ];
     }
 }

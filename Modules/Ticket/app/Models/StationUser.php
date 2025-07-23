@@ -2,21 +2,41 @@
 
 namespace Modules\Ticket\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Modules\Ticket\Database\Factories\StationUserFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StationUser extends Model
 {
-    use HasFactory;
+    protected $table = 'station_users';
+
+    /**
+     * @var string primary key
+     */
+    protected $primaryKey = 'station_user_id';
 
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'station_id',
+        'user_id'
+    ];
 
-    // protected static function newFactory(): StationUserFactory
-    // {
-    //     // return StationUserFactory::new();
-    // }
+
+    /**
+     * Get the user.
+     */
+    public function station(): BelongsTo
+    {
+        return $this->belongsTo(Station::class, 'station_id', 'station_id');
+    }
+
+    /**
+     * Get the product.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
 }
