@@ -6,6 +6,7 @@ use Modules\Ticket\Http\Controllers\FairController;
 use Modules\Ticket\Http\Controllers\StationController;
 use Modules\Ticket\Http\Controllers\ProductController;
 use Modules\Ticket\Http\Controllers\ReaderController;
+use Modules\Ticket\Http\Controllers\StationProductController;
 
 // Route::middleware(['auth', 'verified'])->group(function () {
 //     Route::resource('tickets', TicketController::class)->names('ticket');
@@ -16,6 +17,11 @@ Route::middleware('auth')->prefix('ticket')->group(function () {
     Route::resource('/station', StationController::class)->except(['show']);
     Route::resource('/product', ProductController::class)->except(['show']);
     Route::resource('/ticket', TicketController::class)->except(['show']);
+    Route::resource('/stationProduct', StationProductController::class)->except(['show']);
+
+    Route::controller(StationController::class)->group(function () {
+        Route::get('/station/list/{status}', 'list')->name('station.list');
+    });
 
     Route::controller(ProductController::class)->group(function () {
         Route::get('/product/list/{status}', 'list')->name('product.list');
@@ -24,7 +30,7 @@ Route::middleware('auth')->prefix('ticket')->group(function () {
     Route::controller(ReaderController::class)->group(function () {
         Route::get('/reader/index', 'index')->name('reader.index');
         Route::post('/reader/store', 'store')->name('reader.store');
-        Route::get('/reader/ticket/{uuid}', 'validateTicket')->name('reader.validateTicket');
         Route::get('/reader/report', 'ticketPdf')->name('reader.ticketPdf');
+        Route::get('/reader/ticket/{uuid}', 'validateTicket')->name('reader.validateTicket');
     });
 });

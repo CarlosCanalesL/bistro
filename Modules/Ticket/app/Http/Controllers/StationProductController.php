@@ -10,12 +10,11 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
 use Modules\Ticket\Traits\SetFilterQuery;
 
-class StationStationProductController extends Controller
+class StationProductController extends Controller
 {
     use SetFilterQuery;
     /**
@@ -23,7 +22,7 @@ class StationStationProductController extends Controller
      */
     public function index(Request $request)
     {
-        $query = DB::table('v_station_stationProducts')->when($request->get('search'), function ($query, $search) {
+        $query = DB::table('v_station_Products')->when($request->get('search'), function ($query, $search) {
             return $query->where(function ($query) use ($search) {
                 foreach ($search as $field => $value) {
                     $filter = $this->setField($field);
@@ -38,7 +37,7 @@ class StationStationProductController extends Controller
         });
 
         $result = $query
-            ->select('station_stationProduct_id', 'station_name', 'stationProduct_name')
+            ->select('station_product_id', 'station_name', 'product_name', 'status')
             ->paginate($request->get('limit', 10));
 
         if ($request->expectsJson()) {

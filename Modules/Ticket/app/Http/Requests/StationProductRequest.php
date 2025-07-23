@@ -4,6 +4,7 @@ namespace Modules\Ticket\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Modules\Ticket\Rules\ExistsProductRule;
 
 class StationProductRequest extends FormRequest
 {
@@ -22,7 +23,10 @@ class StationProductRequest extends FormRequest
     {
         return [
             'product_id' => 'required',
-            'station_id' => 'required',
+            'station_id' => [
+                'required',
+                new ExistsProductRule($this->product_id)
+            ],
             'status' => 'required'
         ];
     }
