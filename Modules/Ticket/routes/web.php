@@ -7,6 +7,7 @@ use Modules\Ticket\Http\Controllers\StationController;
 use Modules\Ticket\Http\Controllers\ProductController;
 use Modules\Ticket\Http\Controllers\ReaderController;
 use Modules\Ticket\Http\Controllers\StationProductController;
+use Modules\Ticket\Http\Controllers\StationUserController;
 
 // Route::middleware(['auth', 'verified'])->group(function () {
 //     Route::resource('tickets', TicketController::class)->names('ticket');
@@ -18,6 +19,7 @@ Route::middleware('auth')->prefix('ticket')->group(function () {
     Route::resource('/product', ProductController::class)->except(['show']);
     Route::resource('/ticket', TicketController::class)->except(['show']);
     Route::resource('/stationProduct', StationProductController::class)->except(['show']);
+    Route::resource('/stationUser', StationUserController::class)->except(['show']);
 
     Route::controller(StationController::class)->group(function () {
         Route::get('/station/list/{status}', 'list')->name('station.list');

@@ -4,6 +4,7 @@ namespace Modules\Ticket\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Modules\Ticket\Rules\ExistsUserRule;
 
 class StationUserRequest extends FormRequest
 {
@@ -22,7 +23,10 @@ class StationUserRequest extends FormRequest
     {
         return [
             'station_id' => 'required',
-            'user_id' => 'required',
+            'user_id' => [
+                'required',
+                new ExistsUserRule($this->station_id)
+            ],
         ];
     }
 

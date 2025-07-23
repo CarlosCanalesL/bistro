@@ -22,10 +22,10 @@ class StationProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_id' => 'required',
-            'station_id' => [
+            'station_id' => 'required',
+            'product_id' => [
                 'required',
-                new ExistsProductRule($this->product_id)
+                new ExistsProductRule($this->station_id)
             ],
             'status' => 'required'
         ];

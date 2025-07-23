@@ -34,6 +34,11 @@ export default {
       title: 'Producto por estacion',
       icon: 'mdi-artstation',
       to: '/ticket/stationProduct'
+    },
+    {
+      title: 'Usuario por estacion',
+      icon: 'mdi-artstation',
+      to: '/ticket/stationUser'
     }
   ],
 }
