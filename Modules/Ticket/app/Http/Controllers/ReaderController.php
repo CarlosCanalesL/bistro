@@ -68,24 +68,28 @@ class ReaderController extends Controller
             }
         });
     }
-
     public function ticketPdf(Request $request)
     {
-        $data = [];
-
         $tickets = DB::table('v_tickets')
             ->where('status', 'D')
-            ->select('product_name', 'uuid', 'unit_price')
-            ->get();
+            ->select('product_name', 'uuid', 'unit_price','ticket_id')
+            ->get()
+            ->map(function ($ticket) {
+                return [
+                    'uuid' => $ticket->uuid,
+                    'product_name' => $ticket->product_name,
+                    'unit_price' => $ticket->unit_price,
+                    'ticket_id' => $ticket->ticket_id
+                ];
+            })
+            ->toArray();
 
-        foreach ($tickets as $ticket) {
-            $data[] = [
-                'uuid' => $ticket->uuid,
-                'product_name' => $ticket->product_name,
-            ];
-        }
-
-        $pdf = Pdf::loadView('reports.tickets', ['data' => $data]);
+        $pdf = Pdf::loadView('reports.tickets', [
+            'data' => $tickets,
+            'columns' => 2, // Número de columnas
+            'rows'=> 2,
+            'qrSize' => 65 // Tamaño en px (ajustable)
+        ]);
 
         return $pdf->download('tickets.pdf');
     }
