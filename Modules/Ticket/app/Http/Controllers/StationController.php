@@ -56,8 +56,8 @@ class StationController extends Controller
     {
         $stations =  DB::table('stations')
             ->where(function ($query) use ($enabled) {
-                if ($enabled === 'A') {
-                    $query->where('status', true);
+                if ($enabled === 'Activa') {
+                    $query->where('status', 'Activa');
                 }
             })
             ->select('station_id', 'station_name')

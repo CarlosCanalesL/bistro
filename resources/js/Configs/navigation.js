@@ -29,6 +29,11 @@ export default {
       title: 'Lector QR',
       icon: 'mdi-qrcode-scan',
       to: '/ticket/reader/index'
+    },
+    {
+      title: 'Producto por estacion',
+      icon: 'mdi-artstation',
+      to: '/ticket/stationProduct'
     }
   ],
 }
