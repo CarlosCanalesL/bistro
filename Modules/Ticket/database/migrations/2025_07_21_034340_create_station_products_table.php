@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('station_products', function (Blueprint $table) {
-            $table->unsignedInteger('station_products_id',$autoIncrement = true);
+            $table->unsignedInteger('station_product_id',$autoIncrement = true);
             $table->unsignedInteger('product_id');
             $table->unsignedInteger('station_id');
             $table->unsignedInteger('user_id');
-            $table->boolean('status');
+            $table->enum('status',['Activo','Inactivo'])->default('Activo');
             $table->timestamps();
 
             $table->foreign('product_id')->references('product_id')->on('products')->onUpdate('cascade');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('station_products');
+        Schema::dropIfExists('station_product');
     }
 };

@@ -9,7 +9,7 @@ use App\Models\User;
 
 class StationProduct extends Model
 {
-    protected $table = 'station_products';
+    protected $table = 'station_product';
 
     /**
      * @var string primary key
