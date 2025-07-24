@@ -3,54 +3,72 @@
 namespace Modules\Ticket\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+
+use Modules\Ticket\Traits\SetFilterQuery;
 
 class StationTicketController extends Controller
 {
+    use SetFilterQuery;
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('ticket::index');
+        $query = DB::table('v_station_tickets')->when($request->get('search'), function ($query, $search) {
+            return $query->where(function ($query) use ($search) {
+                foreach ($search as $field => $value) {
+                    $filter = $this->setField($field);
+
+                    if (!is_null($filter) && !is_null($value)) {
+                        $this->setFilter($query, $filter['operator'], $filter['field'], $value);
+                    }
+                }
+            });
+        })->when($request->get('sort'), function ($query, $sortBy) {
+            return $query->orderBy($sortBy['key'], $sortBy['order']);
+        });
+
+        $result = $query
+            ->select('product_name', 'uuid', 'station_name', 'created_at')
+            ->paginate($request->get('limit', 10));
+
+        if ($request->expectsJson()) {
+            return response()->json($result);
+        }
+
+        return Inertia::render('Ticket/StationTicket/Index', [
+            'result' => $result
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * @param type $field
+     * @return type
      */
-    public function create()
+    protected function setField($field): array
     {
-        return view('ticket::create');
+        $fieldList = [
+            'station_id' => [
+                'field' => 'station_id',
+                'operator' => 'equal'
+            ],
+            'product_id' => [
+                'field' => 'product_id',
+                'operator' => 'equal'
+            ],
+            'start_created_at' => [
+                'field' => 'created_at',
+                'operator' => 'greaterThan'
+            ],
+            'end_created_at' => [
+                'field' => 'created_at',
+                'operator' => 'lessThan'
+            ]
+        ];
+
+        return $fieldList[$field] ?? null;
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) {}
-
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('ticket::show');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('ticket::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id) {}
 }
