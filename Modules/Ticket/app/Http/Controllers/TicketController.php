@@ -12,6 +12,8 @@ use Inertia\Response;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
+use Modules\Ticket\Exports\TicketExport;
 
 use Modules\Ticket\Traits\SetFilterQuery;
 
@@ -111,6 +113,14 @@ class TicketController extends Controller
         $ticket->delete();
 
         return redirect()->back()->with('success', sprintf('Eliminado con éxito, el ticket %s', $ticket->ticket_name));
+    }
+
+    public function export(Request $request)
+    {
+        $filters = $request->get('search');
+        $currentDate = $this->getCurrentDate()->format('Y-m-d H.i');
+
+        return Excel::download(new TicketExport($filters), 'tickets_' . $currentDate . '.xlsx');
     }
 
     protected function setDataStore($request)

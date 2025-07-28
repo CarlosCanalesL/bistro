@@ -8,9 +8,11 @@ import DeleteDialog from '@/Components/DeleteDialog.vue'
 import { useTicketStore } from '@/Stores/Ticket/ticketStore'
 import { useProductStore } from '@/Stores/Ticket/productStore'
 import GenTicketDialog from '@/Components/Ticket/GenTicketDialog.vue'
+import { filterItems } from 'vuetify/lib/composables/filter'
 
 const search = ref(null)
 const deleteId = ref(null)
+const queryString = ref([])
 const deleteDialog = ref(false)
 const generateDialog = ref(false)
 const helpers = inject('helpers')
@@ -51,9 +53,12 @@ const loadItems = ({ page, itemsPerPage, sortBy }) => {
 
 const applyFilter = () => {
   search.value = String(Date.now())
+  queryString.value = Object.entries(helpers.removeEmptyAttribute(filterForm))
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+    .join('&')
 }
 
-const genSubmit = (response) => {
+const genSubmit = () => {
   generateDialog.value = false
 }
 
@@ -104,7 +109,7 @@ onMounted(() => {
         <VRow>
           <VCol cols="12" md="12" sm="12">
             <VBtnToggle variant="tonal" divided>
-              <VBtn prepend-icon="mdi-filter" text="Filtrar" color="primary" @click="applyFilter"></VBtn>
+              <VBtn prepend-icon="mdi-filter" text="Filtrar" @click="applyFilter"></VBtn>
               <VBtn prepend-icon="mdi-cogs" text="Generar tickets" @click="generateDialog = true"></VBtn>
             </VBtnToggle>
           </VCol>
@@ -133,7 +138,12 @@ onMounted(() => {
         </VRow>
       </VCardText>
       <VCardActions>
-        <a :href="'/ticket/reader/report'" target="_blank"> <VIcon icon="mdi-download"></VIcon> Descargar </a>
+        <a :href="`/ticket/reader/report?${queryString}&type=excel`" target="_blank">
+          <VIcon icon="mdi-file-excel"></VIcon> Excel
+        </a>
+        <a :href="`/ticket/reader/report?${queryString}&type=pdf`" target="_blank">
+          <VIcon icon="di-file-pdf-box"></VIcon> Pdf
+        </a>
       </VCardActions>
     </VCard>
     <DeleteDialog

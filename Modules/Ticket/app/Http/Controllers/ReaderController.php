@@ -7,13 +7,18 @@ use Modules\Ticket\Http\Requests\ReaderRequest;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\Ticket\Exports\TicketExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Carbon\Carbon;
 
+use Modules\Ticket\Traits\SetFilterQuery;
+
 class ReaderController extends Controller
 {
+    use SetFilterQuery;
     /**
      * Display a listing of the resource.
      */
@@ -68,13 +73,15 @@ class ReaderController extends Controller
             }
         });
     }
+
     public function ticketPdf(Request $request)
     {
-        $tickets = DB::table('v_tickets')
-            ->where('status', 'D')
-            ->select('product_name', 'uuid', 'unit_price','ticket_id')
-            ->get()
-            ->map(function ($ticket) {
+        if ($request->get('type') === 'excel') {
+            return Excel::download(new TicketExport($request), 'tickets_' . $this->getCurrentDate()->format('Y-m-d') . '.xlsx');
+        } else {
+            $result = $this->queryTicket($request);
+
+            $tickets = $result->map(function ($ticket) {
                 return [
                     'uuid' => $ticket->uuid,
                     'product_name' => $ticket->product_name,
@@ -82,16 +89,17 @@ class ReaderController extends Controller
                     'ticket_id' => $ticket->ticket_id
                 ];
             })
-            ->toArray();
+                ->toArray();
 
-        $pdf = Pdf::loadView('reports.tickets', [
-            'data' => $tickets,
-            'columns' => 2, // Número de columnas
-            'rows'=> 2,
-            'qrSize' => 65 // Tamaño en px (ajustable)
-        ]);
+            $pdf = Pdf::loadView('reports.tickets', [
+                'data' => $tickets,
+                'columns' => 2, // Número de columnas
+                'rows' => 2,
+                'qrSize' => 65 // Tamaño en px (ajustable)
+            ]);
 
-        return $pdf->download('tickets.pdf');
+            return $pdf->download('tickets.pdf');
+        }
     }
 
     private function setDataStore($request, $station_user_id)
@@ -113,6 +121,22 @@ class ReaderController extends Controller
         return DB::table('station_users')
             ->where('user_id', $user->user_id)
             ->first();
+    }
+
+    private function queryTicket($request)
+    {
+        return DB::table('v_tickets')
+            ->when($request->get('product_id'), function ($query, $product_id) {
+                return $query->where('product_id', $product_id);
+            })
+            ->when($request->get('status'), function ($query, $status) {
+                return $query->where('status', $status);
+            })
+            ->when($request->get('uuid'), function ($query, $uuid) {
+                return $query->where('uuid', 'like', '%' . $uuid . '%');
+            })
+            ->select('product_name', 'uuid', 'unit_price', 'ticket_id')
+            ->get();
     }
 
     private function getTicket($uuid)
