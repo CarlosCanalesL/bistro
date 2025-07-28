@@ -38,19 +38,19 @@ export default {
     },
     {
       title: 'Producto por estacion',
-      icon: 'mdi-artstation',
+      icon: 'mdi-table-chair',
       to: '/ticket/stationProduct',
       roles: ['Administrador','Empleado'],
     },
     {
       title: 'Usuario por estacion',
-      icon: 'mdi-artstation',
+      icon: 'mdi-home-account',
       to: '/ticket/stationUser',
       roles: ['Administrador','Empleado'],
     },
     {
       title: 'Ticket por estacion',
-      icon: 'mdi-artstation',
+      icon: 'mdi-ticket',
       to: '/ticket/stationTicket',
       roles: ['Administrador','Empleado'],
     }
