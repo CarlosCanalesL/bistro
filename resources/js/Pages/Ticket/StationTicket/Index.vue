@@ -9,6 +9,7 @@ import { useProductStore } from '@/Stores/Ticket/productStore'
 import { storeToRefs } from 'pinia'
 
 const search = ref(null)
+const queryString = ref([])
 const helpers = inject('helpers')
 const productStore = useProductStore()
 const stationStore = useStationStore()
@@ -40,6 +41,9 @@ const loadItems = ({ page, itemsPerPage, sortBy }) => {
 
 const applyFilter = () => {
   search.value = String(Date.now())
+  queryString.value = Object.entries(helpers.removeEmptyAttribute(filterForm))
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+    .join('&')
 }
 
 onMounted(() => {
@@ -84,10 +88,10 @@ onMounted(() => {
         </VRow>
         <VRow>
           <VCol cols="12" md="6" sm="12">
-            <VTextField v-model="filterForm.start_created_at" label="Fecha de consumo inicial"></VTextField>
+            <VTextField v-model="filterForm.start_created_at" type="date" label="Fecha de consumo inicial"></VTextField>
           </VCol>
           <VCol cols="12" md="6" sm="12">
-            <VTextField v-model="filterForm.end_created_at" label="Fecha de consumo final"></VTextField>
+            <VTextField v-model="filterForm.end_created_at" type="date" label="Fecha de consumo final"></VTextField>
           </VCol>
         </VRow>
         <VRow dense>
@@ -111,6 +115,11 @@ onMounted(() => {
           </VCol>
         </VRow>
       </VCardText>
+      <VCardActions>
+        <a :href="`/ticket/stationTicket/export?${queryString}&type=excel`" target="_blank">
+          <VIcon icon="mdi-file-excel"></VIcon> Excel
+        </a>
+      </VCardActions>
     </VCard>
   </AuthenticatedLayout>
 </template>

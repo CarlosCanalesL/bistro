@@ -15,10 +15,6 @@ Route::middleware('auth')->prefix('ticket')->group(function () {
     // 🛡️ Solo Administrador
     Route::middleware('role:Administrador')->group(function () {
         Route::resource('/ticket', TicketController::class)->except(['show']);
-
-        Route::controller(TicketController::class)->group(function () {
-            Route::get('/ticket/export', 'export')->name('ticket.export');
-        });
     });
 
     // 🛡️ Administrador y Empleado (módulos generales)
@@ -36,6 +32,10 @@ Route::middleware('auth')->prefix('ticket')->group(function () {
 
         Route::controller(ProductController::class)->group(function () {
             Route::get('/product/list/{status}', 'list')->name('product.list');
+        });
+
+        Route::controller(StationTicketController::class)->group(function () {
+            Route::get('/stationTicket/export', 'export')->name('stationTicket.export');
         });
     });
 

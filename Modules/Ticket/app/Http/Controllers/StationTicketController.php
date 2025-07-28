@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use Modules\Ticket\Exports\StationTicketExport;
 
 use Modules\Ticket\Traits\SetFilterQuery;
 
@@ -42,6 +45,16 @@ class StationTicketController extends Controller
         return Inertia::render('Ticket/StationTicket/Index', [
             'result' => $result
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new StationTicketExport($request), 'station_tickets_' . $this->getCurrentDate()->format('Y-m-d') . '.xlsx');
+    }
+
+    protected function getCurrentDate()
+    {
+        return Carbon::now()->setTimezone(config('app.timezone'));
     }
 
     /**
