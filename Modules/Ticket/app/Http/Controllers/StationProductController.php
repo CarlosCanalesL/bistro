@@ -63,7 +63,7 @@ class StationProductController extends Controller
     public function store(StationProductRequest $request)
     {
         $stationProduct = $this->setDataStore($request);
-        $stationProductId = DB::table('station_products')->insertGetId($stationProduct);
+        $stationProductId = DB::table('station_products ')->insertGetId($stationProduct);
 
         $message = sprintf('La estacion y el producto %s, ha sido ingresada exitosamente.', $stationProduct['station_id']);
 

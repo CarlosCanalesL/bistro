@@ -1,12 +1,25 @@
 <script setup>
-import { Link } from '@inertiajs/vue3'
+import { Link, usePage } from '@inertiajs/vue3'
 import navigation from '@/Configs/navigation'
+
+// 🔐 Acceso seguro al usuario
+const page = usePage()
+const user = page.props.auth?.user
+
+// ⛑️ Validación segura
+const filteredItems = user
+  ? navigation.items.filter(item => item.roles?.includes(user.role))
+  : []
 </script>
 
 <template>
   <v-list nav>
-    <!-- List Menu -->
-    <Link v-for="(item, key) in navigation.items" :key="key" :href="item.to" as="div">
+    <Link
+      v-for="(item, key) in filteredItems"
+      :key="key"
+      :href="item.to"
+      as="div"
+    >
       <v-list-item
         :prepend-icon="item.icon"
         :title="item.title"
@@ -15,7 +28,7 @@ import navigation from '@/Configs/navigation'
         :class="{ 'v-list-item--active': $page.url.startsWith(item.to) }"
       />
     </Link>
-    <!-- Log Out -->
+
     <Link href="/logout" method="post" as="div">
       <v-list-item prepend-icon="mdi-exit-to-app" title="Log Out" link />
     </Link>

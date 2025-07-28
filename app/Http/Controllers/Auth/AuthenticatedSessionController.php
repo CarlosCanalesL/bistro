@@ -34,8 +34,24 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        $user = Auth::user();
+
+        switch ($user->role) {
+            case 'Administrador':
+            case 'Empleado':
+                $redirectTo = RouteServiceProvider::HOME; // normalmente '/dashboard'
+                break;
+            case 'Lector':
+                $redirectTo = '/ticket/reader/index'; // ruta para lector QR
+                break;
+            default:
+                $redirectTo = RouteServiceProvider::HOME;
+                break;
+        }
+
+        return redirect()->intended($redirectTo);
     }
+
 
     /**
      * Destroy an authenticated session.

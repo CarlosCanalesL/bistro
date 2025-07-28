@@ -10,31 +10,38 @@ use Modules\Ticket\Http\Controllers\StationProductController;
 use Modules\Ticket\Http\Controllers\StationUserController;
 use Modules\Ticket\Http\Controllers\StationTicketController;
 
-// Route::middleware(['auth', 'verified'])->group(function () {
-//     Route::resource('tickets', TicketController::class)->names('ticket');
-// });
-
 Route::middleware('auth')->prefix('ticket')->group(function () {
-    Route::resource('/fair', FairController::class)->except(['show']);
-    Route::resource('/station', StationController::class)->except(['show']);
-    Route::resource('/product', ProductController::class)->except(['show']);
-    Route::resource('/ticket', TicketController::class)->except(['show']);
-    Route::resource('/stationUser', StationUserController::class)->except(['show']);
-    Route::resource('/stationTicket', StationTicketController::class)->only(['index']);
-    Route::resource('/stationProduct', StationProductController::class)->except(['show']);
 
-    Route::controller(StationController::class)->group(function () {
-        Route::get('/station/list/{status}', 'list')->name('station.list');
+    // 🛡️ Solo Administrador
+    Route::middleware('role:Administrador')->group(function () {
+        Route::resource('/ticket', TicketController::class)->except(['show']);
     });
 
-    Route::controller(ProductController::class)->group(function () {
-        Route::get('/product/list/{status}', 'list')->name('product.list');
+    // 🛡️ Administrador y Empleado (módulos generales)
+    Route::middleware('role:Administrador,Empleado')->group(function () {
+        Route::resource('/fair', FairController::class)->except(['show']);
+        Route::resource('/station', StationController::class)->except(['show']);
+        Route::resource('/product', ProductController::class)->except(['show']);
+        Route::resource('/stationUser', StationUserController::class)->except(['show']);
+        Route::resource('/stationProduct', StationProductController::class)->except(['show']);
+        Route::resource('/stationTicket', StationTicketController::class)->only(['index']);
+
+        Route::controller(StationController::class)->group(function () {
+            Route::get('/station/list/{status}', 'list')->name('station.list');
+        });
+
+        Route::controller(ProductController::class)->group(function () {
+            Route::get('/product/list/{status}', 'list')->name('product.list');
+        });
     });
 
-    Route::controller(ReaderController::class)->group(function () {
-        Route::get('/reader/index', 'index')->name('reader.index');
-        Route::post('/reader/store', 'store')->name('reader.store');
-        Route::get('/reader/report', 'ticketPdf')->name('reader.ticketPdf');
-        Route::get('/reader/ticket/{uuid}', 'validateTicket')->name('reader.validateTicket');
+    // 🛡️ Todos los roles (Administrador, Empleado, Lector): acceso al lector
+    Route::middleware('role:Administrador,Empleado,Lector')->group(function () {
+        Route::controller(ReaderController::class)->group(function () {
+            Route::get('/reader/index', 'index')->name('reader.index');
+            Route::post('/reader/store', 'store')->name('reader.store');
+            Route::get('/reader/report', 'ticketPdf')->name('reader.ticketPdf');
+            Route::get('/reader/ticket/{uuid}', 'validateTicket')->name('reader.validateTicket');
+        });
     });
 });
