@@ -14,6 +14,7 @@ export const useProductStore = defineStore('productStore', () => {
   const isLoading = ref(false)
 
   const form = useForm({
+    prefix: null,
     product_name: null,
     unit_price: null,
     status: null,

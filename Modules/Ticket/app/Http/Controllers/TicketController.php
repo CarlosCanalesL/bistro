@@ -11,7 +11,6 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 use Modules\Ticket\Traits\SetFilterQuery;
 
@@ -118,10 +117,12 @@ class TicketController extends Controller
         $inserts = [];
         $user = Auth::user();
         $current_date = $this->getCurrentDate()->format('Y-m-d H.i:s');
+        $prefix = $this->getPrefixProduct($request->get('product_id'));
+        $max_product_id = $this->getMaxProductId($request->get('product_id'));
 
         for ($i = 0; $i < $request->get('quantity'); $i++) {
             $inserts[] = [
-                'uuid' => Str::uuid(),
+                'uuid' => implode('-', [$prefix, $max_product_id]),
                 'status' => $request->get('status'),
                 'product_id' => $request->get('product_id'),
                 'user_id' => $user->user_id,
@@ -129,9 +130,39 @@ class TicketController extends Controller
                 'updated_at' => $current_date
 
             ];
+
+            $max_product_id++;
         }
 
         return $inserts;
+    }
+
+    protected function getMaxProductId($product_id)
+    {
+        $product_max_id = 1;
+
+        $ticket =  DB::table('tickets')
+            ->where('product_id', $product_id)
+            ->orderBy('ticket_id', 'desc')
+            ->limit(0, 1)
+            ->first();
+
+        if ($ticket) {
+            $prefixExplode = explode('-', $ticket->uuid);
+            $product_max_id = (int) $prefixExplode[1];
+            $product_max_id++;
+        }
+
+        return $product_max_id;
+    }
+
+    protected function getPrefixProduct($product_id)
+    {
+        $product = DB::table('products')
+            ->where('product_id', $product_id)
+            ->first();
+
+        return $product->prefix;
     }
 
     protected function getCurrentDate()

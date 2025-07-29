@@ -18,7 +18,7 @@ class Product extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'uuid',
+        'prefix',
         'product_name',
         'unit_price',
         'status',

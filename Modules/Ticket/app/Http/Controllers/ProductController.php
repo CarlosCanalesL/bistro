@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 
 use Modules\Ticket\Traits\SetFilterQuery;
 
@@ -37,7 +36,7 @@ class ProductController extends Controller
         });
 
         $result = $query
-            ->select('product_id', 'uuid', 'product_name', 'unit_price', 'status')
+            ->select('product_id', 'prefix', 'product_name', 'unit_price', 'status')
             ->paginate($request->get('limit', 10));
 
         if ($request->expectsJson()) {
@@ -135,7 +134,7 @@ class ProductController extends Controller
         $current_date = $this->getCurrentDate()->format('Y-m-d H.i:s');
 
         return [
-            'uuid' => Str::uuid(),
+            'prefix' => strtoupper($request->get('prefix')),
             'product_name' => $request->get('product_name'),
             'unit_price' => $request->get('unit_price'),
             'status' => $request->get('status'),

@@ -21,6 +21,7 @@ class ProductRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'prefix' => 'required',
             'product_name' => 'required',
             'unit_price' => 'required',
             'status' => 'required'
@@ -33,6 +34,7 @@ class ProductRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'prefix.required' => 'El campo :attribute es obligatorio.',
             'product_name.required' => 'El campo :attribute es obligatorio.',
             'unit_price.required' => 'El campo :attribute es obligatorio.',
             'status.required' => 'El campo :attribute es obligatorio.'

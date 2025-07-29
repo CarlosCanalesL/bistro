@@ -15,7 +15,7 @@ const productStore = useProductStore()
 const { items, totalItems, isLoading } = storeToRefs(productStore)
 
 const filterForm = reactive({
-  uuid: null,
+  prefix: null,
   product_name: null,
   status: null,
 })
@@ -69,7 +69,7 @@ const applyFilter = () => {
         </VRow>
         <VRow>
           <VCol cols="12" md="6" sm="12">
-            <VTextField v-model="filterForm.uuid" label="UUID del producto" hide-details clearable></VTextField>
+            <VTextField v-model="filterForm.prefix" label="Prefijo del producto" hide-details clearable></VTextField>
           </VCol>
           <VCol cols="12" md="6" sm="12">
             <VRadioGroup v-model="filterForm.status" label="Estatus" hide-details inline>
@@ -121,7 +121,7 @@ export default {
     return {
       headers: [
         { title: 'Nombre del producto', key: 'product_name' },
-        { title: 'UUID del producto', key: 'uuid' },
+        { title: 'Prefijo del producto', key: 'prefix' },
         { title: 'Precio unitario', key: 'unit_price' },
         { title: 'Estatus', key: 'status' },
         { title: 'Acción', key: 'action', sortable: false },

@@ -25,12 +25,11 @@ const submit = () => {
       <VForm @submit.prevent="submit">
         <VCardText>
           <VRow>
-            <VCol cols="12" md="12" sm="12">
-              <VTextField
-                v-model="form.product_name"
-                label="Nombre del producto"
-                :error-messages="errors.product_name"
-              />
+            <VCol cols="12" md="6" sm="12">
+              <VTextField v-model="form.product_name" label="Nombre" :error-messages="errors.product_name" />
+            </VCol>
+            <VCol cols="12" md="6" sm="12">
+              <VTextField v-model="form.prefix" label="Prefijo" :error-messages="errors.prefix"></VTextField>
             </VCol>
           </VRow>
           <VRow>

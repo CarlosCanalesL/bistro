@@ -47,12 +47,13 @@ onMounted(() => {
           </VRow>
           <VRow>
             <VCol cols="12" md="6" sm="12">
-              <VTextField
+              <VNumberInput
                 v-model="form.quantity"
                 label="Cantidad"
+                min="1"
                 clearable
                 :error-messages="errors.quantity"
-              ></VTextField>
+              ></VNumberInput>
             </VCol>
             <VCol cols="12" md="6" sm="12">
               <VSelect
