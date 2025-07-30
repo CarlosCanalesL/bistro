@@ -110,7 +110,7 @@
 
                     {{-- Columna derecha (Texto) --}}
                     <div class="text-content">
-                        <div class="id-ticket">N.{{ $ticket['ticket_id'] }}</div>
+                        <div class="id-ticket">{{ $ticket['uuid'] }}</div>
                         <div class="product-name">{{ $ticket['product_name'] }}</div>
                         <div class="price">CORTESIA</div>
                     </div>
