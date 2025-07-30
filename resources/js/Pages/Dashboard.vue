@@ -13,7 +13,7 @@ const gainsByDate = ref([])
 
 const breadcrumbs = ref([
   {
-    title: 'Dashboard',
+    title: 'Panel de comando',
     disabled: true,
   },
 ])
@@ -34,28 +34,28 @@ onMounted(async () => {
 
 
 <template>
-  <Head title="Dashboard" />
+  <Head title="Panel" />
   <AuthenticatedLayout>
     <div class="mb-5">
-      <h5 class="text-h5 font-weight-bold">Dashboard</h5>
+      <h5 class="text-h5 font-weight-bold">Panel de comando</h5>
       <Breadcrumbs :items="breadcrumbs" class="pa-0 mt-1" />
     </div>
 
     <v-card class="mb-5">
       <v-card-text>
-        <div class="text-h6 text-medium-emphasis">Welcome back, {{ $page.props.auth.user.name }}!</div>
+        <div class="text-h6 text-medium-emphasis">Bienvenido/a de nuevo, {{ $page.props.auth.user.name }}!</div>
       </v-card-text>
     </v-card>
 
     <v-card>
       <v-card-text>
-      <DashboardCharts
-        v-if="barData.length && pieData.length"
-        :barData="barData"
-        :pieData="pieData"
-        :gainsByStation="gainsByStation"
-        :gainsByDate="gainsByDate"
-      />
+        <DashboardCharts
+          v-if="barData.length && pieData.length"
+          :barData="barData"
+          :pieData="pieData"
+          :gainsByStation="gainsByStation"
+          :gainsByDate="gainsByDate"
+        />
       </v-card-text>
     </v-card>
   </AuthenticatedLayout>

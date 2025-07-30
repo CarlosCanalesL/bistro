@@ -15,13 +15,10 @@ return new class extends Migration
             $table->unsignedInteger('station_product_id',$autoIncrement = true);
             $table->unsignedInteger('product_id');
             $table->unsignedInteger('station_id');
-            $table->unsignedInteger('user_id');
-            $table->enum('status',['Activo','Inactivo'])->default('Activo');
             $table->timestamps();
 
             $table->foreign('product_id')->references('product_id')->on('products')->onUpdate('cascade');
             $table->foreign('station_id')->references('station_id')->on('stations')->onUpdate('cascade');
-            $table->foreign('user_id')->references('user_id')->on('users')->onUpdate('cascade');
         });
     }
 
