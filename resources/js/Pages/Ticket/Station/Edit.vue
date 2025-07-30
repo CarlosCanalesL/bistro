@@ -4,10 +4,16 @@ import { Head, Link, usePage } from '@inertiajs/vue3'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { useStationStore } from '@/Stores/Ticket/stationStore'
+import { useProductStore } from '@/Stores/Ticket/productStore'
+import { useUserStore } from '@/Stores/Admin/User/userStore'
 import { storeToRefs } from 'pinia'
 
 const page = usePage()
 const stationStore = useStationStore()
+const productStore = useProductStore()
+const userStore = useUserStore()
+const { products } = storeToRefs(productStore)
+const { users } = storeToRefs(userStore)
 const { form, errors, isLoading } = storeToRefs(stationStore)
 
 const submit = () => {
@@ -15,6 +21,8 @@ const submit = () => {
 }
 
 onMounted(() => {
+  userStore.ajaxList('A')
+  productStore.ajaxList('A')
   Object.assign(stationStore.form, page.props.station)
 })
 </script>
@@ -42,6 +50,29 @@ onMounted(() => {
                 <VRadio value="Activa" label="Activa"></VRadio>
                 <VRadio value="Inactiva" label="Inactiva"></VRadio>
               </VRadioGroup>
+            </VCol>
+          </VRow>
+          <VRow dense>
+            <VCol cols="12" md="6" sm="12">
+              <VSelect
+                v-model="form.product_ids"
+                label="Productos por estacion"
+                :items="products"
+                item-title="product_name"
+                item-value="product_id"
+                clearable
+                multiple
+                chips
+              ></VSelect>
+            </VCol>
+            <VCol cols="12" md="6" sm="12">
+              <VAutocomplete
+                v-model="form.user_ids"
+                label="Usuarios por estacion"
+                :items="users"
+                item-title="name"
+                item-value="user_id"
+              ></VAutocomplete>
             </VCol>
           </VRow>
         </VCardText>

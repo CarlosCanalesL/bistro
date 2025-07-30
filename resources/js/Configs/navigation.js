@@ -10,19 +10,19 @@ export default {
       title: 'Ferias',
       icon: 'mdi-calendar-star',
       to: '/ticket/fair',
-      roles: ['Administrador','Empleado'],
+      roles: ['Administrador', 'Empleado'],
     },
     {
       title: 'Estaciones',
       icon: 'mdi-map-marker',
       to: '/ticket/station',
-      roles: ['Administrador','Empleado'],
+      roles: ['Administrador', 'Empleado'],
     },
     {
       title: 'Productos',
       icon: 'mdi-package-variant',
       to: '/ticket/product',
-      roles: ['Administrador','Empleado'],
+      roles: ['Administrador', 'Empleado'],
     },
     {
       title: 'Tickets',
@@ -37,22 +37,10 @@ export default {
       roles: ['Administrador', 'Empleado', 'Lector'],
     },
     {
-      title: 'Producto por estacion',
-      icon: 'mdi-table-chair',
-      to: '/ticket/stationProduct',
-      roles: ['Administrador','Empleado'],
-    },
-    {
-      title: 'Usuario por estacion',
-      icon: 'mdi-home-account',
-      to: '/ticket/stationUser',
-      roles: ['Administrador','Empleado'],
-    },
-    {
       title: 'Ticket por estacion',
       icon: 'mdi-ticket',
       to: '/ticket/stationTicket',
-      roles: ['Administrador','Empleado'],
+      roles: ['Administrador', 'Empleado'],
     }
   ],
 }

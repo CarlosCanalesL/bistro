@@ -2,13 +2,14 @@
 
 namespace Modules\Ticket\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Station extends Model
 {
-   protected $table = 'stations';
+    protected $table = 'stations';
 
     /**
      * @var string primary key
@@ -28,17 +29,19 @@ class Station extends Model
     /**
      * Get the operations for the part.
      */
-    public function products(): HasMany
+    public function products(): BelongsToMany
     {
-        return $this->hasMany(StationProduct::class, 'station_id');
+        return $this->belongsToMany(Product::class, 'station_products', 'station_id', 'product_id')
+            ->withTimestamps();
     }
 
     /**
      * Get the operations for the part.
      */
-    public function users(): HasMany
+    public function users(): BelongsToMany
     {
-        return $this->hasMany(StationUser::class, 'station_id');
+        return $this->belongsToMany(User::class, 'station_users', 'station_id', 'user_id')
+            ->withTimestamps();
     }
 
     public static function boot()

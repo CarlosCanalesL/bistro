@@ -4,6 +4,7 @@ namespace Modules\Ticket\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Product extends Model
 {
@@ -36,8 +37,8 @@ class Product extends Model
     /**
      * Get the operations for the part.
      */
-    public function stationProducts(): HasMany
+    public function stations(): BelongsToMany
     {
-        return $this->hasMany(StationProduct::class, 'product_id');
+        return $this->belongsToMany(Station::class, 'station_products');
     }
 }

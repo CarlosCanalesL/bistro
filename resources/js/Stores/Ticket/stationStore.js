@@ -16,6 +16,8 @@ export const useStationStore = defineStore('stationStore', () => {
   const form = useForm({
     station_name: null,
     status: null,
+    product_ids: [],
+    user_ids: null,
   })
 
   const redirect = () => {

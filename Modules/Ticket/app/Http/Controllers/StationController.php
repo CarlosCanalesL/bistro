@@ -83,17 +83,22 @@ class StationController extends Controller
         $station = $this->setDataStore($request);
         $stationId = DB::table('stations')->insertGetId($station);
 
+        $station = $this->getStationById($stationId);
+
+        if ($request->has('product_ids')) {
+            $station->products()->sync($request->input('product_ids'));
+        }
+
+        if ($request->has('user_ids')) {
+            $station->users()->sync($request->input('user_ids'));
+        }
+
         $message = sprintf('La estacion %s, ha sido ingresada exitosamente.', $station['station_name']);
 
         if ($request->expectsJson()) {
-            if ($stationId) {
-                $newStation = (object) $station;
-                $newStation->station_id = $stationId;
-            }
-
             return response()->json([
                 'message' => $message,
-                'station' => $newStation
+                'station' => $station
             ]);
         }
 
@@ -105,6 +110,9 @@ class StationController extends Controller
      */
     public function edit(Station $station): Response
     {
+        $station->product_ids = $station->products->pluck('product_id');
+        $station->user_ids = $station->users->pluck('user_id');
+
         return Inertia::render('Ticket/Station/Edit', [
             'station' => $station
         ]);
@@ -117,6 +125,14 @@ class StationController extends Controller
     {
         $station->update($request->all());
 
+        if ($request->has('product_ids')) {
+            $station->products()->sync($request->input('product_ids'));
+        }
+
+        if ($request->has('user_ids')) {
+            $station->users()->sync($request->input('user_ids'));
+        }
+
         return redirect()->back()->with('success', sprintf('Actualizado con éxito, la estacion %s', $station->station_name));
     }
 
@@ -128,6 +144,11 @@ class StationController extends Controller
         $station->delete();
 
         return redirect()->back()->with('success', sprintf('Eliminado con éxito, la estacion %s', $station->station_name));
+    }
+
+    private function getStationById($station_id)
+    {
+        return Station::find($station_id);
     }
 
     protected function setDataStore($request)
