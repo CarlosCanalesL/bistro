@@ -116,14 +116,7 @@
                     </div>
                 </div>
             </div>
-
-
                 @endforeach
-
-                {{-- Rellenar celdas vacías si la última fila no está completa --}}
-                @for($i = count($row); $i < $columns; $i++)
-                <div class="cell"><!-- Celda vacía --></div>
-                @endfor
             </div>
             @endforeach
         </div>
