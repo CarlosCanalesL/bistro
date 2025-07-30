@@ -105,7 +105,7 @@
                 <div class="content">
                     {{-- Columna izquierda (QR) --}}
                     <div class="qr-code">
-                        {!! DNS2D::getBarcodeHTML($ticket['uuid'], 'QRCODE', 4, 4) !!}
+                        {!! DNS2D::getBarcodeHTML($ticket['uuid'], 'QRCODE', 5, 5) !!}
                     </div>
 
                     {{-- Columna derecha (Texto) --}}

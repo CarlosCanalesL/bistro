@@ -12,16 +12,16 @@ export default {
       to: '/ticket/fair',
       roles: ['Administrador', 'Empleado'],
     },
+        {
+      title: 'Productos',
+      icon: 'mdi-package-variant',
+      to: '/ticket/product',
+      roles: ['Administrador', 'Empleado'],
+    },
     {
       title: 'Estaciones',
       icon: 'mdi-map-marker',
       to: '/ticket/station',
-      roles: ['Administrador', 'Empleado'],
-    },
-    {
-      title: 'Productos',
-      icon: 'mdi-package-variant',
-      to: '/ticket/product',
       roles: ['Administrador', 'Empleado'],
     },
     {
